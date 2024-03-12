@@ -1,0 +1,86 @@
+[2024-03-12T03:19:05.535+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: dag_climate.create_locations_and_forecast_tables manual__2024-03-12T03:18:58.148491+00:00 [queued]>
+[2024-03-12T03:19:05.564+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: dag_climate.create_locations_and_forecast_tables manual__2024-03-12T03:18:58.148491+00:00 [queued]>
+[2024-03-12T03:19:05.566+0000] {taskinstance.py:1361} INFO - Starting attempt 1 of 4
+[2024-03-12T03:19:05.619+0000] {taskinstance.py:1382} INFO - Executing <Task(PostgresOperator): create_locations_and_forecast_tables> on 2024-03-12 03:18:58.148491+00:00
+[2024-03-12T03:19:05.738+0000] {standard_task_runner.py:57} INFO - Started process 580 to run task
+[2024-03-12T03:19:05.771+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'dag_climate', 'create_locations_and_forecast_tables', 'manual__2024-03-12T03:18:58.148491+00:00', '--job-id', '62', '--raw', '--subdir', 'DAGS_FOLDER/dag_climate.py', '--cfg-path', '/tmp/tmp94gusg1e']
+[2024-03-12T03:19:05.776+0000] {standard_task_runner.py:85} INFO - Job 62: Subtask create_locations_and_forecast_tables
+[2024-03-12T03:19:06.165+0000] {task_command.py:416} INFO - Running <TaskInstance: dag_climate.create_locations_and_forecast_tables manual__2024-03-12T03:18:58.148491+00:00 [running]> on host 4828059c33e5
+[2024-03-12T03:19:06.562+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='dag_climate' AIRFLOW_CTX_TASK_ID='create_locations_and_forecast_tables' AIRFLOW_CTX_EXECUTION_DATE='2024-03-12T03:18:58.148491+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-03-12T03:18:58.148491+00:00'
+[2024-03-12T03:19:06.586+0000] {sql.py:274} INFO - Executing: CREATE TABLE IF NOT EXISTS location (
+        id INT PRIMARY KEY,
+        nombre VARCHAR(100)
+    ) DISTSTYLE ALL SORTKEY (id);
+    INSERT INTO location (id, nombre)
+    VALUES
+        (1, 'Buenos Aires'),
+        (2, 'Córdoba'),
+        (3, 'Rosario'),
+        (4, 'Mendoza'),
+        (5, 'San Miguel de Tucumán'),
+        (6, 'La Plata'),
+        (7, 'Mar del Plata'),
+        (8, 'Salta'),
+        (9, 'Santa Fe'),
+        (10, 'San Juan'),
+        (11, 'Resistencia'),
+        (12, 'Santiago del Estero'),
+        (13, 'Posadas'),
+        (14, 'San Salvador de Jujuy'),
+        (15, 'Bahía Blanca'),
+        (16, 'Paraná'),
+        (17, 'Merlo'),
+        (18, 'José C. Paz'),
+        (19, 'Quilmes'),
+        (20, 'Pilar');
+
+CREATE TABLE IF NOT EXISTS forecast (
+        id INT IDENTITY(1,1) PRIMARY KEY,
+        date TIMESTAMP,
+        prediction_date TIMESTAMP,
+        locationId INT REFERENCES location(id),
+        max_temperature FLOAT,
+        min_temperature FLOAT,
+        precipitation_probability_max FLOAT
+    ) DISTKEY (locationId) SORTKEY (date);
+[2024-03-12T03:19:06.606+0000] {base.py:73} INFO - Using connection ID 'coderhouse_connection' for task execution.
+[2024-03-12T03:19:06.640+0000] {base.py:73} INFO - Using connection ID 'coderhouse_connection' for task execution.
+[2024-03-12T03:19:07.989+0000] {sql.py:418} INFO - Running statement: CREATE TABLE IF NOT EXISTS location (
+        id INT PRIMARY KEY,
+        nombre VARCHAR(100)
+    ) DISTSTYLE ALL SORTKEY (id);
+    INSERT INTO location (id, nombre)
+    VALUES
+        (1, 'Buenos Aires'),
+        (2, 'Córdoba'),
+        (3, 'Rosario'),
+        (4, 'Mendoza'),
+        (5, 'San Miguel de Tucumán'),
+        (6, 'La Plata'),
+        (7, 'Mar del Plata'),
+        (8, 'Salta'),
+        (9, 'Santa Fe'),
+        (10, 'San Juan'),
+        (11, 'Resistencia'),
+        (12, 'Santiago del Estero'),
+        (13, 'Posadas'),
+        (14, 'San Salvador de Jujuy'),
+        (15, 'Bahía Blanca'),
+        (16, 'Paraná'),
+        (17, 'Merlo'),
+        (18, 'José C. Paz'),
+        (19, 'Quilmes'),
+        (20, 'Pilar');
+
+CREATE TABLE IF NOT EXISTS forecast (
+        id INT IDENTITY(1,1) PRIMARY KEY,
+        date TIMESTAMP,
+        prediction_date TIMESTAMP,
+        locationId INT REFERENCES location(id),
+        max_temperature FLOAT,
+        min_temperature FLOAT,
+        precipitation_probability_max FLOAT
+    ) DISTKEY (locationId) SORTKEY (date);, parameters: None
+[2024-03-12T03:19:08.603+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=dag_climate, task_id=create_locations_and_forecast_tables, execution_date=20240312T031858, start_date=20240312T031905, end_date=20240312T031908
+[2024-03-12T03:19:08.638+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2024-03-12T03:19:08.660+0000] {taskinstance.py:2778} INFO - 1 downstream tasks scheduled from follow-on schedule check
