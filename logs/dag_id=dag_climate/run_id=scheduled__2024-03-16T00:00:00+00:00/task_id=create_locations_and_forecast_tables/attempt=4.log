@@ -1,0 +1,60 @@
+[2024-03-21T01:03:12.046+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: dag_climate.create_locations_and_forecast_tables scheduled__2024-03-16T00:00:00+00:00 [queued]>
+[2024-03-21T01:03:12.053+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: dag_climate.create_locations_and_forecast_tables scheduled__2024-03-16T00:00:00+00:00 [queued]>
+[2024-03-21T01:03:12.055+0000] {taskinstance.py:1361} INFO - Starting attempt 4 of 4
+[2024-03-21T01:03:12.069+0000] {taskinstance.py:1382} INFO - Executing <Task(PostgresOperator): create_locations_and_forecast_tables> on 2024-03-16 00:00:00+00:00
+[2024-03-21T01:03:12.074+0000] {standard_task_runner.py:57} INFO - Started process 479 to run task
+[2024-03-21T01:03:12.083+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'dag_climate', 'create_locations_and_forecast_tables', 'scheduled__2024-03-16T00:00:00+00:00', '--job-id', '61', '--raw', '--subdir', 'DAGS_FOLDER/dag_climate.py', '--cfg-path', '/tmp/tmpf70qrgkg']
+[2024-03-21T01:03:12.085+0000] {standard_task_runner.py:85} INFO - Job 61: Subtask create_locations_and_forecast_tables
+[2024-03-21T01:03:12.147+0000] {task_command.py:416} INFO - Running <TaskInstance: dag_climate.create_locations_and_forecast_tables scheduled__2024-03-16T00:00:00+00:00 [running]> on host 50fc123683ca
+[2024-03-21T01:03:12.186+0000] {abstractoperator.py:709} ERROR - Exception rendering Jinja template for task 'create_locations_and_forecast_tables', field 'sql'. Template: ['CREATE TABLE IF NOT EXISTS location (\n        id INT PRIMARY KEY,\n        nombre VARCHAR(100)\n    ) DISTSTYLE ALL SORTKEY (id);', 'populate_locations_table.sql', 'CREATE TABLE IF NOT EXISTS forecast (\n        id INT IDENTITY(1,1) PRIMARY KEY,\n        date TIMESTAMP,\n        prediction_date TIMESTAMP,\n        locationId INT REFERENCES location(id),\n        max_temperature FLOAT,\n        min_temperature FLOAT,\n        precipitation_probability_max FLOAT\n    ) DISTKEY (locationId) SORTKEY (date);']
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/abstractoperator.py", line 701, in _do_render_template_fields
+    rendered_content = self.render_template(
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/template/templater.py", line 165, in render_template
+    return [self.render_template(element, context, jinja_env, oids) for element in value]
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/template/templater.py", line 165, in <listcomp>
+    return [self.render_template(element, context, jinja_env, oids) for element in value]
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/template/templater.py", line 152, in render_template
+    template = jinja_env.get_template(value)
+  File "/home/airflow/.local/lib/python3.8/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+  File "/home/airflow/.local/lib/python3.8/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "/home/airflow/.local/lib/python3.8/site-packages/jinja2/loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/home/airflow/.local/lib/python3.8/site-packages/jinja2/loaders.py", line 218, in get_source
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: populate_locations_table.sql
+[2024-03-21T01:03:12.188+0000] {taskinstance.py:1937} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 1518, in _run_raw_task
+    self._execute_task_with_callbacks(context, test_mode, session=session)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 1647, in _execute_task_with_callbacks
+    task_orig = self.render_templates(context=context)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/taskinstance.py", line 2285, in render_templates
+    original_task.render_template_fields(context)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/baseoperator.py", line 1243, in render_template_fields
+    self._do_render_template_fields(self, self.template_fields, context, jinja_env, set())
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/utils/session.py", line 79, in wrapper
+    return func(*args, session=session, **kwargs)
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/models/abstractoperator.py", line 701, in _do_render_template_fields
+    rendered_content = self.render_template(
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/template/templater.py", line 165, in render_template
+    return [self.render_template(element, context, jinja_env, oids) for element in value]
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/template/templater.py", line 165, in <listcomp>
+    return [self.render_template(element, context, jinja_env, oids) for element in value]
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/template/templater.py", line 152, in render_template
+    template = jinja_env.get_template(value)
+  File "/home/airflow/.local/lib/python3.8/site-packages/jinja2/environment.py", line 1010, in get_template
+    return self._load_template(name, globals)
+  File "/home/airflow/.local/lib/python3.8/site-packages/jinja2/environment.py", line 969, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "/home/airflow/.local/lib/python3.8/site-packages/jinja2/loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+  File "/home/airflow/.local/lib/python3.8/site-packages/jinja2/loaders.py", line 218, in get_source
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: populate_locations_table.sql
+[2024-03-21T01:03:12.197+0000] {taskinstance.py:1400} INFO - Marking task as FAILED. dag_id=dag_climate, task_id=create_locations_and_forecast_tables, execution_date=20240316T000000, start_date=20240321T010312, end_date=20240321T010312
+[2024-03-21T01:03:12.207+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 61 for task create_locations_and_forecast_tables (populate_locations_table.sql; 479)
+[2024-03-21T01:03:12.215+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 1
+[2024-03-21T01:03:12.230+0000] {taskinstance.py:2778} INFO - 0 downstream tasks scheduled from follow-on schedule check
