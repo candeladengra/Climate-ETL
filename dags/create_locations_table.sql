@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS location (
+        id INT PRIMARY KEY,
+        nombre VARCHAR(100)
+    ) DISTSTYLE ALL SORTKEY (id);

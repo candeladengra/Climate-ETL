@@ -18,12 +18,10 @@ with DAG(
     default_args=default_args,
 ) as dag:
 
-    dummy_start_task = DummyOperator(task_id="pipeline_start")
-
     create_tables_task = PostgresOperator(
         task_id="create_locations_and_forecast_tables",
         postgres_conn_id="coderhouse_connection",
-        sql="creates.sql",
+        sql=["create_locations_table.sql","populate_locations_table.sql", "create_forecast_table.sql"],
         hook_params={"options": "-c search_path=candeladolores_coderhouse"},
     )
 
@@ -32,8 +30,4 @@ with DAG(
         python_callable=insert_forecast_data,
     )
 
-    dummy_end_task = DummyOperator(task_id="pipeline_end")
-
-    dummy_start_task >> create_tables_task
     create_tables_task >> insert_forecast_data_task
-    insert_forecast_data_task >> dummy_end_task
