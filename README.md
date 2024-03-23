@@ -10,6 +10,8 @@ Scalable Storage: Leveraging Redshift's scalable and high-performance data wareh
 
 Scheduled Execution: Integrated with Apache Airflow, Climate-ETL facilitates scheduled execution, enabling seamless orchestration of data extraction, transformation, and loading tasks.
 
+Email Alerts for Temperature Limits: Climate-ETL sends email alerts when temperature values exceed certain thresholds. This functionality enhances the system's monitoring capabilities by proactively notifying administrators when certain thresholds are surpassed.
+
 # Usage
 
 1. Build Docker Containers:
