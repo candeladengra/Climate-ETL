@@ -4,7 +4,9 @@ import psycopg2
 import requests_cache
 from retry_requests import retry
 from configparser import ConfigParser
-from datetime import date
+from datetime import date, datetime
+from airflow.models import Variable
+import smtplib
 
 
 def read_credentials(config_file, section):
@@ -120,7 +122,7 @@ def connect_to_database():
     return conn
 
 
-def insert_forecast_data():
+def insert_forecast_data(ti):
     conn = connect_to_database()
     insert_query = """
     INSERT INTO forecast (date, prediction_date, locationId, max_temperature, min_temperature, precipitation_probability_max)
@@ -142,6 +144,37 @@ def insert_forecast_data():
 
     cur.executemany(insert_query, data_values)
 
+    for data in data_values:
+        cur.execute("SELECT nombre FROM location WHERE id = %s", (data[2],))
+        location_name = cur.fetchone()[0]
+        data_date = pd.Timestamp(data[0])
+        if float(data[3]) > 39:  
+            ti.xcom_push(key='temperature_alert', value=f"High temperature alert: {round(data[3], 1)}°C exceeds 39°C - Date: {data_date.strftime('%Y-%m-%d')} - Location: {location_name}")
+        elif float(data[4]) < 3:  
+            ti.xcom_push(key='temperature_alert', value=f"Low temperature alert: {round(data[4], 1)}°C is below 3°C - Date: {data_date.strftime('%Y-%m-%d')} - Location: {location_name}")
+        else:
+            ti.xcom_push(key='temperature_alert', value=f"No climate alerts detected for date: {data_date.strftime('%Y-%m-%d')} - Location: {location_name}")
+
+
     conn.commit()
     cur.close()
     conn.close()
+
+def send_email(context):
+    try:
+        x = smtplib.SMTP('smtp.gmail.com',587)
+        x.starttls()
+        
+        x.login(
+            'candeladolores@gmail.com',
+            Variable.get('GMAIL_SECRET')
+        )
+
+        subject = f'Alert: Airflow report {context["dag"]} {context["ds"]}'
+        body_text = context['ti'].xcom_pull(key="temperature_alert", task_ids="insert_forecast_data")
+        message = f'Subject: {subject}\n\n{body_text}'        
+        x.sendmail('candeladolores@gmail.com', 'candeladolores@gmail.com', message)
+        print('Email sent')
+    except Exception as exception:
+        print(exception)
+        print('Failure')

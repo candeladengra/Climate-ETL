@@ -6,7 +6,7 @@ from airflow.operators.dummy import DummyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 
-from scripts.main import insert_forecast_data
+from scripts.main import insert_forecast_data, send_email
 
 default_args = {"retries": 3, "retry_delay": timedelta(minutes=1)}
 
@@ -28,6 +28,8 @@ with DAG(
     insert_forecast_data_task = PythonOperator(
         task_id="insert_forecast_data",
         python_callable=insert_forecast_data,
+        provide_context=True,
+        on_success_callback=send_email,
     )
 
     create_tables_task >> insert_forecast_data_task
